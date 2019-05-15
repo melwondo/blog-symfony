@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<articles>
+    <h2>{{ article.title }}</h2>
+    <div class="metadata">Ecrit le {{ article.createdAt | date('d/m/Y') }} à {{ article.createdAt | date('H:i')}}
+        {{article.category.title}}</div>
+    <div class="content">
+        <img src="{{ article.image }}" alt="">
+        {{ article.content | raw }}
+
+    </div>
+</articles>
+
+
+<section id="commentaire">
+    <h1>{{ article.comments | length }} Commentaires :</h1>
+    {% for comment in article.comments %}
+    <div class="comment">
+        <div class="row">
+            <div class="col-3">
+                {{comment.author}} (<small>{{comment.createdAt | date ('d/m/Y à H:i')}}</small>)
+            </div>
+            <div class="col">
+                {{comment.content | raw}}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if app.user %}
+    
+    <h2>Ajouter un commentaire</h2>
+
+    {{ form_start(commentForm) }}
+
+    {{ form_row(commentForm.author, { 'label' : "Auteur",'attr' : {'placeholder' : "Votre nom" }})}}
+    {{ form_row(commentForm.content, { 'label' : "Commentaire", 'attr' : {'placeholder' : "Votre commentaire" }})}}
+
+    <button type="submit" class="btn btn-success">
+        Poster votre commentaire
+    </button>
+
+    {{ form_end(commentForm )}}
+
+    {% else %}
+        <h3>Vous devez être connecté pour poster un commentaire</h3>
+        <a href="{{ path('security_login') }}" class="btn btn-success">
+            Connexion
+        </a>
+        <a href="{{ path('security_registration') }}" class="btn btn-success">
+            Inscription
+        </a>
+
+    {% endif %}
+</section>
+{% endblock %}
